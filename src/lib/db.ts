@@ -198,14 +198,14 @@ function seed(db: DB) {
   const rand = mulberry32(42);
 
   const insertUser = db.prepare(
-    `INSERT INTO users (id, email, name, password_hash, role, plan, avatar_color, created_at)
+    `INSERT OR IGNORE INTO users (id, email, name, password_hash, role, plan, avatar_color, created_at)
      VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
   );
 
-  const demoId = randomId(8);
-  const adminId = randomId(8);
-  const bsdAdminId = randomId(8);
-  const bsdUserId = randomId(8);
+  const bsdAdminId = "usr_bsd_admin";
+  const bsdUserId = "usr_bsd_creator";
+  const demoId = "usr_velo_demo";
+  const adminId = "usr_velo_admin";
 
   insertUser.run(
     bsdAdminId, "admin@bigsavingsdays.com", "BigSavingsDays Admin", hashPassword("admin1234"),
@@ -224,10 +224,10 @@ function seed(db: DB) {
     "admin", "business", "#2B4CFF", now - 400 * day
   );
 
-  const mayaId = randomId(8);
-  const arjunId = randomId(8);
-  const lenaId = randomId(8);
-  const samId = randomId(8);
+  const mayaId = "usr_maya_kapoor";
+  const arjunId = "usr_arjun_mehta";
+  const lenaId = "usr_lena_fischer";
+  const samId = "usr_sam_okafor";
   insertUser.run(
     mayaId, "maya@studio.co", "Maya Kapoor", hashPassword("velo1234"),
     "user", "free", "#FF6B35", now - 120 * day
@@ -245,11 +245,11 @@ function seed(db: DB) {
     "user", "business", "#8B5CF6", now - 22 * day
   );
 
-  const demoDomainId = randomId(8);
+  const demoDomainId = "dom_bsd_deals";
   db.prepare(
-    `INSERT INTO domains (id, user_id, hostname, status, verification_token, created_at)
+    `INSERT OR IGNORE INTO domains (id, user_id, hostname, status, verification_token, created_at)
      VALUES (?, ?, ?, ?, ?, ?)`
-  ).run(demoDomainId, demoId, "go.velo.link", "verified", "velo-verify-8f2a", now - 90 * day);
+  ).run(demoDomainId, bsdUserId, "go.bigsavingsdays.com", "verified", "bsd-verify-8f2a", now - 90 * day);
 
   type SeedLink = {
     slug: string; url: string; title: string; tags: string; age: number;

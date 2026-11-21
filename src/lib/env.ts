@@ -73,20 +73,18 @@ export function cnameTarget(): string {
   }
 }
 
-/** The public demo workspace is opt-in outside development. */
+/** The public demo workspace is enabled by default unless explicitly disabled with DEMO_MODE=0. */
 export function demoEnabled(): boolean {
   const flag = clean(process.env.DEMO_MODE);
-  if (flag === "1") return true;
   if (flag === "0") return false;
-  return !isProduction;
+  return true;
 }
 
-/** Demo seed data is opt-in outside development. */
+/** Demo seed data is seeded by default unless explicitly disabled with SEED_DEMO=0. */
 export function seedDemo(): boolean {
   const flag = clean(process.env.SEED_DEMO);
-  if (flag === "1") return true;
   if (flag === "0") return false;
-  return !isProduction;
+  return true;
 }
 
 /**

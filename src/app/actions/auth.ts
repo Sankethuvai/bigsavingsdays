@@ -34,8 +34,8 @@ export async function signInAction(_prev: AuthState, formData: FormData): Promis
   }
 
   const user = getDb()
-    .prepare("SELECT id, password_hash FROM users WHERE email = ?")
-    .get(email) as { id: string; password_hash: string } | undefined;
+    .prepare("SELECT id, email, name, role, plan, avatar_color, password_hash FROM users WHERE email = ?")
+    .get(email) as { id: string; email: string; name: string; role: "user" | "admin"; plan: "free" | "pro" | "business"; avatar_color: string; password_hash: string } | undefined;
 
   // Always perform a scrypt verification so response time does not reveal account existence.
   const valid = verifyPassword(password, user?.password_hash ?? dummyPasswordHash());
@@ -44,7 +44,7 @@ export async function signInAction(_prev: AuthState, formData: FormData): Promis
   }
 
   clearRateLimit(emailBucket);
-  await startSession(user.id);
+  await startSession(user.id, user);
   redirect(next);
 }
 
@@ -70,16 +70,23 @@ export async function signUpAction(_prev: AuthState, formData: FormData): Promis
   if (exists) return { error: "An account with that email already exists. Try signing in." };
 
   const colors = ["#B6F24A", "#FF5A2B", "#9DB0FF", "#22C3A6", "#E5488A", "#8B5CF6"];
+  const color = colors[Math.floor(Math.random() * colors.length)];
   const id = randomId(8);
   db.prepare(
     `INSERT INTO users (id, email, name, password_hash, role, plan, avatar_color, created_at)
      VALUES (?, ?, ?, ?, 'user', 'free', ?, ?)`
-  ).run(id, email, name, hashPassword(password), colors[Math.floor(Math.random() * colors.length)], Date.now());
+  ).run(id, email, name, hashPassword(password), color, Date.now());
 
   if (isProduction) {
     console.info(`[auth] new account ${id} created`);
   }
-  await startSession(id);
+  await startSession(id, {
+    email,
+    name,
+    role: "user",
+    plan: "free",
+    avatar_color: color,
+  });
   redirect("/dashboard?welcome=1");
 }
 

@@ -43,6 +43,16 @@ const nextConfig: NextConfig = {
   output: process.env.VERCEL ? undefined : "standalone",
   serverExternalPackages: ["better-sqlite3"],
   poweredByHeader: false,
+  experimental: {
+    serverActions: {
+      allowedOrigins: [
+        "bigsavingsdays.com",
+        "*.bigsavingsdays.com",
+        "localhost:3000",
+        "*.vercel.app",
+      ],
+    },
+  },
   async headers() {
     return [
       {

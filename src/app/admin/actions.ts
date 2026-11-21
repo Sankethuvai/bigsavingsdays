@@ -29,8 +29,8 @@ export async function adminSignInAction(_prev: { error?: string } | null, formDa
   }
 
   const user = getDb()
-    .prepare("SELECT id, password_hash, role FROM users WHERE email = ?")
-    .get(email) as { id: string; password_hash: string; role: string } | undefined;
+    .prepare("SELECT id, email, name, role, plan, avatar_color, password_hash FROM users WHERE email = ?")
+    .get(email) as { id: string; email: string; name: string; role: "user" | "admin"; plan: "free" | "pro" | "business"; avatar_color: string; password_hash: string } | undefined;
 
   // Always hash so a non-existent account and a wrong password take the same time.
   const valid = verifyPassword(password, user?.password_hash ?? dummyPasswordHash());
@@ -41,7 +41,7 @@ export async function adminSignInAction(_prev: { error?: string } | null, formDa
 
   clearRateLimit(emailBucket);
   await audit({ actorId: user.id, action: "admin.login" });
-  await startSession(user.id);
+  await startSession(user.id, user);
   redirect("/admin");
 }
 
