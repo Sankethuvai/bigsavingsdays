@@ -40,5 +40,7 @@ export function resolveServeDomain(host: string): { id: string; hostname: string
 
 /** A link's canonical public URL, honouring its custom domain when it has one. */
 export function linkShortUrl(base: string, slug: string, hostname?: string | null): string {
-  return hostname ? `https://${hostname}/${slug}` : `${base}/${slug}`;
+  if (hostname) return `https://${hostname}/${slug}`;
+  if (base.includes("vercel.app")) return `https://bigsavingsdays.com/${slug}`;
+  return `${base}/${slug}`;
 }

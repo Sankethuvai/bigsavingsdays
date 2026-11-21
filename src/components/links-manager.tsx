@@ -79,9 +79,14 @@ export function LinksManager({
     return () => clearTimeout(timer);
   }, [toasts]);
 
+  const displayHost = useMemo(() => {
+    const clean = base.replace(/^https?:\/\//, "").replace(/\/+$/, "");
+    return clean.includes("vercel.app") ? "bigsavingsdays.com" : clean || "bigsavingsdays.com";
+  }, [base]);
+
   const selectedHost = (() => {
     const chosen = domains.find((d) => d.id === form.domainId);
-    return chosen?.hostname ?? base.replace(/^https?:\/\//, "");
+    return chosen?.hostname ?? displayHost;
   })();
 
   function toast(message: string) {
@@ -340,7 +345,7 @@ export function LinksManager({
                   <div className="field">
                     <label className="label" htmlFor="new-domain">Domain</label>
                     <select id="new-domain" className="select" value={form.domainId} onChange={(e) => setForm({ ...form, domainId: e.target.value })}>
-                      <option value="">{base.replace(/^https?:\/\//, "")} (default)</option>
+                      <option value="">{displayHost} (default)</option>
                       {domains.map((d) => <option key={d.id} value={d.id}>{d.hostname}</option>)}
                     </select>
                     <span className="hint">Use a verified custom domain for branded links.</span>
@@ -391,7 +396,7 @@ export function LinksManager({
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={`/api/qr?text=${encodeURIComponent(qrLink.shortUrl)}&size=600`} alt={`QR code for ${base}/${qrLink.slug}`} width={240} height={240} />
               </div>
-              <p className="center mono small mt-16">{base.replace(/^https?:\/\//, "")}/{qrLink.slug}</p>
+              <p className="center mono small mt-16">{qrLink.domain || displayHost}/{qrLink.slug}</p>
               <div className="modal-foot">
                 <a className="btn btn-ghost" href={`/api/qr?text=${encodeURIComponent(qrLink.shortUrl)}&size=1200`} download={`${qrLink.slug}-qr.png`}>
                   <Download width={15} height={15} /> Download PNG

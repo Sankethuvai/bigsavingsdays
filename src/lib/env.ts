@@ -20,10 +20,7 @@ function clean(value: string | undefined): string | null {
 export function appUrl(): string {
   const configured = publicBaseUrl(true);
   if (configured) return configured;
-  if (process.env.VERCEL_URL) {
-    return `https://${process.env.VERCEL_URL}`;
-  }
-  if (isProduction) {
+  if (isProduction || process.env.VERCEL) {
     return "https://bigsavingsdays.com";
   }
   return "http://localhost:3000";
@@ -36,8 +33,8 @@ export function appUrl(): string {
 export function publicBaseUrl(allowNull = false): string | null {
   const configured = clean(process.env.APP_URL) ?? clean(process.env.NEXT_PUBLIC_APP_URL);
   if (configured) return configured.replace(/\/+$/, "");
-  if (process.env.VERCEL_URL) {
-    return `https://${process.env.VERCEL_URL}`.replace(/\/+$/, "");
+  if (isProduction || process.env.VERCEL) {
+    return "https://bigsavingsdays.com";
   }
   return allowNull ? null : "https://bigsavingsdays.com";
 }

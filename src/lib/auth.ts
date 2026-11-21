@@ -231,9 +231,10 @@ export async function getBaseUrl(): Promise<string> {
   // but would let a spoofed Host header poison generated links in production.
   const configured = process.env.APP_URL?.trim() || process.env.NEXT_PUBLIC_APP_URL?.trim();
   if (configured) return configured.replace(/\/+$/, "");
-  if (isProduction) return appUrl();
+  if (isProduction || process.env.VERCEL) return "https://bigsavingsdays.com";
   const h = await headers();
   const host = h.get("x-forwarded-host") ?? h.get("host") ?? "localhost:3000";
+  if (host.includes("vercel.app")) return "https://bigsavingsdays.com";
   const proto = h.get("x-forwarded-proto") ?? (host.startsWith("localhost") ? "http" : "https");
   return `${proto}://${host}`;
 }

@@ -14,6 +14,8 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
   const { welcome } = await searchParams;
   const user = await requireUser();
   const base = await getBaseUrl();
+  const cleanBase = base.replace(/^https?:\/\//, "").replace(/\/+$/, "");
+  const displayDomain = cleanBase.includes("vercel.app") ? "bigsavingsdays.com" : cleanBase || "bigsavingsdays.com";
 
   const t = totalsFor(user.id);
   const series = dailySeries({ userId: user.id, days: 30 });
@@ -110,7 +112,7 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
                     <span className="link-fav">{l.slug.slice(0, 2)}</span>
                     <div className="main">
                       <div className="t">
-                        <Link href={`/dashboard/links/${l.id}`} className="link-slug">{base.replace(/^https?:\/\//, "")}/{l.slug}</Link>
+                        <Link href={`/dashboard/links/${l.id}`} className="link-slug">{displayDomain}/{l.slug}</Link>
                       </div>
                       <div className="s">{l.title || displayUrl(l.url)}</div>
                     </div>
