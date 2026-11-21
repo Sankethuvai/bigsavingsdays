@@ -204,6 +204,17 @@ function seed(db: DB) {
 
   const demoId = randomId(8);
   const adminId = randomId(8);
+  const bsdAdminId = randomId(8);
+  const bsdUserId = randomId(8);
+
+  insertUser.run(
+    bsdAdminId, "admin@bigsavingsdays.com", "BigSavingsDays Admin", hashPassword("admin1234"),
+    "admin", "business", "#FF5722", now - 400 * day
+  );
+  insertUser.run(
+    bsdUserId, "user@bigsavingsdays.com", "Deals Creator", hashPassword("user1234"),
+    "user", "pro", "#10B981", now - 210 * day
+  );
   insertUser.run(
     demoId, "demo@velo.link", "Demo Creator", hashPassword("demo1234"),
     "user", "pro", "#B6F24A", now - 210 * day
