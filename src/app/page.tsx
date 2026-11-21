@@ -194,7 +194,7 @@ export default async function HomePage() {
                 <div className="code-block" style={{ marginTop: 16, fontSize: 10.5, padding: "10px 12px" }}>
                   <span className="c">// POST /api/v1/links</span><br />
                   <span className="k">curl</span> -X POST .../links <span className="s">\</span><br />
-                  &nbsp;&nbsp;-H <span className="s">&quot;Authorization: Bearer velo_sk_…&quot;</span>
+                  &nbsp;&nbsp;-H <span className="s">&quot;Authorization: Bearer bsd_sk_…&quot;</span>
                 </div>
               </div>
             </div>

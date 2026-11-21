@@ -20,7 +20,7 @@ export default async function ApiPage() {
       <div className="page-head">
         <div>
           <h1>API</h1>
-          <p>Build Velo into your product with a predictable JSON API.</p>
+          <p>Build BigSavingsDays into your product with a predictable JSON API.</p>
         </div>
         <Link href="/docs" className="btn btn-ghost btn-sm">Read the docs</Link>
       </div>
@@ -31,7 +31,7 @@ export default async function ApiPage() {
         <div className="card card-pad">
           <div className="row gap-8"><div className="icon-box" style={{ margin: 0 }}><Code /></div><div><div className="panel-title">Quick start</div><div className="panel-sub">Create a link with one request</div></div></div>
           <pre className="code-block">{`curl -X POST ${base}/api/v1/links \\
-  -H "Authorization: Bearer velo_sk_…" \\
+  -H "Authorization: Bearer bsd_sk_…" \\
   -H "Content-Type: application/json" \\
   -d '{
     "url": "https://example.com/launch",

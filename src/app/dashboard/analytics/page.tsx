@@ -146,7 +146,7 @@ export default async function AnalyticsPage({ searchParams }: { searchParams: Pr
               {browsers.length === 0 && <p className="small muted">No data.</p>}
             </div>
             <div className="alert mt-16" style={{ fontSize: 12 }}>
-              <span className="row gap-8"><Globe width={13} height={13} /> Country data comes from the CDN edge. Local demo shows seeded data.</span>
+              <span className="row gap-8"><Globe width={13} height={13} /> Geographic and browser telemetry is aggregated in real-time at the edge.</span>
             </div>
           </div>
         </div>

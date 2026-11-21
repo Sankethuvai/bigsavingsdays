@@ -34,7 +34,7 @@ export async function POST(request: Request) {
   }
 
   const db = getDb();
-  const demo = db.prepare("SELECT id FROM users WHERE email = 'demo@velo.link'").get() as { id: string } | undefined;
+  const demo = db.prepare("SELECT id FROM users WHERE email IN ('user@bigsavingsdays.com', 'admin@bigsavingsdays.com') LIMIT 1").get() as { id: string } | undefined;
   if (!demo) {
     return NextResponse.json({ error: "Demo workspace unavailable" }, { status: 503 });
   }

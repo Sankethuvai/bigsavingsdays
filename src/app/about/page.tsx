@@ -63,8 +63,17 @@ export default async function AboutPage() {
                 ].map((f) => <div key={f} className="plan-feature"><Check /><span>{f}</span></div>)}
               </div>
               <div className="row gap-8 mt-24">
-                {showDemo && <Link href="/demo" className="btn btn-primary">Open the live demo</Link>}
-                <Link href="/docs" className="btn btn-ghost">Read the API docs</Link>
+                {showDemo ? (
+                  <>
+                    <Link href="/demo" className="btn btn-primary">Open the live demo</Link>
+                    <Link href="/docs" className="btn btn-ghost">Read the API docs</Link>
+                  </>
+                ) : (
+                  <>
+                    <Link href="/signup" className="btn btn-primary">Create free account</Link>
+                    <Link href="/docs" className="btn btn-ghost">Read the API docs</Link>
+                  </>
+                )}
               </div>
             </div>
           </div>

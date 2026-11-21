@@ -30,7 +30,7 @@ export default async function PrivacyPage() {
           <h2 id="cookies">Cookies</h2>
           <p>BigSavingsDays uses a minimal number of first-party cookies:</p>
           <ul>
-            <li><code>bsd_session</code> / <code>velo_session</code> — keeps you signed in securely. HttpOnly, SameSite=Lax.</li>
+            <li><code>bsd_session</code> — keeps you signed in securely. HttpOnly, SameSite=Lax.</li>
             <li><code>bsd_unlock_*</code> — remembers a deal password unlock for 30 minutes.</li>
             <li><code>bsd-theme</code> — remembers your light/dark mode preference.</li>
           </ul>

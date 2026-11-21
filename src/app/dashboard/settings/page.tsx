@@ -78,7 +78,7 @@ export default async function SettingsPage({ searchParams }: { searchParams: Pro
 
           <div className="card card-pad">
             <div className="panel-title">Appearance</div>
-            <p className="panel-sub" style={{ marginBottom: 12 }}>Velo remembers your choice on this device.</p>
+            <p className="panel-sub" style={{ marginBottom: 12 }}>BigSavingsDays remembers your choice on this device.</p>
             <ThemeRow />
           </div>
 

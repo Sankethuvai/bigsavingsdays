@@ -121,3 +121,10 @@ test("toCsv keeps header order and escapes every row", () => {
 test("toCsv returns empty output for no rows", () => {
   assert.equal(toCsv([]), "");
 });
+
+test("linkShortUrl defaults to bigsavingsdays.com for vercel preview hosts", async () => {
+  const { linkShortUrl } = await import("../src/lib/domains.ts");
+  assert.equal(linkShortUrl("https://bigsavingsdays-preview.vercel.app", "spring-sale"), "https://bigsavingsdays.com/spring-sale");
+  assert.equal(linkShortUrl("https://bigsavingsdays.com", "summer-deal"), "https://bigsavingsdays.com/summer-deal");
+  assert.equal(linkShortUrl("https://bigsavingsdays.com", "exclusive", "go.deals.com"), "https://go.deals.com/exclusive");
+});

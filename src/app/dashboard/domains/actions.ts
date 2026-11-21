@@ -44,7 +44,7 @@ export async function addDomainAction(formData: FormData) {
   const id = randomId(8);
   db.prepare(
     "INSERT INTO domains (id, user_id, hostname, status, verification_token, created_at) VALUES (?, ?, ?, 'pending', ?, ?)"
-  ).run(id, user.id, raw, `velo-verify-${randomId(4)}`, Date.now());
+  ).run(id, user.id, raw, `bsd-verify-${randomId(4)}`, Date.now());
   await audit({ actorId: user.id, action: "domain.added", target: raw });
   revalidatePath("/dashboard/domains");
 }
@@ -61,7 +61,16 @@ export async function verifyDomainAction(formData: FormData) {
     let matches = false;
     try {
       const records = await Promise.race([
-        dns.resolveTxt(`_velo.${domain.hostname}`),
+        Promise.allSettled([
+          dns.resolveTxt(`_bsd.${domain.hostname}`),
+          dns.resolveTxt(`_velo.${domain.hostname}`),
+        ]).then((results) => {
+          const all: string[][] = [];
+          for (const r of results) {
+            if (r.status === "fulfilled") all.push(...r.value);
+          }
+          return all;
+        }),
         new Promise<string[][]>((resolve) => setTimeout(() => resolve([]), 5000)),
       ]);
       matches = records.some((parts) => parts.join("").trim() === domain.verification_token);

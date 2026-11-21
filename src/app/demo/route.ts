@@ -9,7 +9,7 @@ export async function GET(request: Request) {
   }
 
   const db = getDb();
-  const demo = db.prepare("SELECT id FROM users WHERE email IN ('demo@bigsavingsdays.com', 'demo@velo.link') LIMIT 1").get() as { id: string } | undefined;
+  const demo = db.prepare("SELECT id FROM users WHERE email IN ('user@bigsavingsdays.com', 'admin@bigsavingsdays.com') LIMIT 1").get() as { id: string } | undefined;
   if (!demo) return NextResponse.redirect(new URL("/login", request.url));
   await endSession();
   await startSession(demo.id);

@@ -24,7 +24,7 @@ export default async function ContactPage({ searchParams }: { searchParams: Prom
                 <div className="center" style={{ padding: "30px 0" }}>
                   <div className="icon-box" style={{ margin: "0 auto 14px", color: "var(--success)" }}><Check /></div>
                   <h3 style={{ fontSize: 22 }}>Message received</h3>
-                  <p className="muted mt-8 small">In this demo no email is sent. In production this would hit your support inbox.</p>
+                  <p className="muted mt-8 small">Thank you for reaching out. Our team will review your message and reply within 24 business hours.</p>
                 </div>
               ) : (
                 <form action={contactAction} className="form-grid">

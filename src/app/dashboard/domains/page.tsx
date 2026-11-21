@@ -28,7 +28,7 @@ export default async function DomainsPage({ searchParams }: { searchParams: Prom
 
       {error && (
         <div className="alert" style={{ marginBottom: 16 }}>
-          {error === "invalid" ? "Enter a valid domain like go.yourbrand.com." : error === "taken" ? "That domain is already connected." : error === "reserved" ? "That hostname belongs to Velo itself and cannot be connected." : error === "dns" ? "The TXT record was not found yet. DNS can take up to 24 hours to propagate, then try again." : error === "plan" ? "Custom domains are only available on Pro and Business plans." : "You have used every custom domain on your plan. Upgrade or remove one to add another."}
+          {error === "invalid" ? "Enter a valid domain like go.yourbrand.com." : error === "taken" ? "That domain is already connected." : error === "reserved" ? "That hostname belongs to BigSavingsDays itself and cannot be connected." : error === "dns" ? "The TXT record was not found yet. DNS can take up to 24 hours to propagate, then try again." : error === "plan" ? "Custom domains are only available on Pro and Business plans." : "You have used every custom domain on your plan. Upgrade or remove one to add another."}
         </div>
       )}
 
@@ -73,10 +73,10 @@ export default async function DomainsPage({ searchParams }: { searchParams: Prom
                   <thead><tr><th>Type</th><th>Name</th><th>Value</th></tr></thead>
                   <tbody>
                     <tr><td>CNAME</td><td className="mono">{d.hostname}</td><td className="mono">{cname}</td></tr>
-                    <tr><td>TXT</td><td className="mono">_velo.{d.hostname}</td><td className="mono">{d.verification_token}</td></tr>
+                    <tr><td>TXT</td><td className="mono">_bsd.{d.hostname}</td><td className="mono">{d.verification_token}</td></tr>
                   </tbody>
                 </table>
-                <p className="hint mt-8">DNS changes can take up to 24 hours. Velo checks the TXT record when you press Verify DNS. TLS certificates are issued by your reverse proxy or certificate manager once DNS points at this server.</p>
+                <p className="hint mt-8">DNS changes can take up to 24 hours. BigSavingsDays checks the TXT record when you press Verify DNS. TLS certificates are issued by your reverse proxy or certificate manager once DNS points at this server.</p>
               </div>
             )}
           </div>
@@ -86,7 +86,7 @@ export default async function DomainsPage({ searchParams }: { searchParams: Prom
       {domains.length === 0 && (
         <div className="card empty">
           <Globe />
-          <p>No domains connected yet. Free plans use velo.link; Pro and Business can bring their own.</p>
+          <p>No domains connected yet. Free plans use bigsavingsdays.com; Pro and Business can bring their own.</p>
         </div>
       )}
 
@@ -96,7 +96,7 @@ export default async function DomainsPage({ searchParams }: { searchParams: Prom
           <p className="small muted">
             {manual
               ? "Manual verification is enabled (DOMAIN_VERIFY_MODE=manual). This is for local development only; production requires the TXT record to match."
-              : "A domain is served only after the _velo TXT record matches its verification token. Point the CNAME at this server and let your proxy or certificate manager handle TLS."}
+              : "A domain is served only after the _bsd TXT record matches its verification token. Point the CNAME at this server and let your proxy or certificate manager handle TLS."}
           </p>
         </div>
       </div>

@@ -43,8 +43,7 @@ export function LoginForm({ next, showDemo }: { next: string; showDemo: boolean 
           <div className="demo-box">
             <b style={{ color: "var(--ink)" }}>Default test accounts</b><br />
             Admin — <code>admin@bigsavingsdays.com</code> / <code>admin1234</code><br />
-            Creator — <code>user@bigsavingsdays.com</code> / <code>user1234</code><br />
-            <span style={{ fontSize: 11, color: "var(--ink-muted)" }}>(Legacy: <code>admin@velo.link</code> / <code>demo@velo.link</code> also active)</span>
+            Creator — <code>user@bigsavingsdays.com</code> / <code>user1234</code>
           </div>
         </>
       )}

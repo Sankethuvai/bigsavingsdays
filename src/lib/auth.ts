@@ -6,7 +6,7 @@ import { getDb } from "./db";
 import { randomId } from "./crypto";
 import { appUrl, isProduction, sessionSecret, trustProxy } from "./env";
 
-export const SESSION_COOKIE = "velo_session";
+export const SESSION_COOKIE = "bsd_session";
 const SESSION_DAYS = 30;
 
 export type SessionUser = {
@@ -58,7 +58,7 @@ function verifySession(token: string): SessionPayload | null {
 
 export const getSessionUser = cache(async (): Promise<SessionUser | null> => {
   const jar = await cookies();
-  const token = jar.get(SESSION_COOKIE)?.value;
+  const token = jar.get(SESSION_COOKIE)?.value ?? jar.get("velo_session")?.value;
   if (!token) return null;
 
   // 1. Signed stateless session (100% resilient across serverless Lambdas and cold starts)
@@ -224,6 +224,7 @@ export async function endSession(): Promise<void> {
     } catch {}
   }
   jar.delete(SESSION_COOKIE);
+  jar.delete("velo_session");
 }
 
 export async function getBaseUrl(): Promise<string> {

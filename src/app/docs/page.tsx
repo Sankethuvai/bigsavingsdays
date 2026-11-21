@@ -45,13 +45,13 @@ export default async function DocsPage() {
                 <h2>Quickstart</h2>
                 <p>Create a key in <Link href="/dashboard/api" style={{ textDecoration: "underline" }}>Dashboard → API</Link>, then make your first request. All endpoints are under <code>{base}/api/v1</code>.</p>
                 <pre className="code-block">{`curl ${base}/api/v1/links \\
-  -H "Authorization: Bearer velo_sk_your_key"`}</pre>
+  -H "Authorization: Bearer bsd_sk_your_key"`}</pre>
               </section>
 
               <section id="auth">
                 <h2>Authentication</h2>
                 <p>Send your key as a bearer token. Keys are scoped to one workspace, shown once at creation, and stored as a SHA-256 hash.</p>
-                <pre className="code-block">{`Authorization: Bearer velo_sk_...`}</pre>
+                <pre className="code-block">{`Authorization: Bearer bsd_sk_...`}</pre>
                 <p>Never put a key in client-side JavaScript or a public repository. Rotate immediately if a key leaks — revoking is instant.</p>
               </section>
 
@@ -59,7 +59,7 @@ export default async function DocsPage() {
                 <h2>Create a link</h2>
                 <p><code>POST /api/v1/links</code> — returns <code>201</code> with the created link. <code>url</code> is required; <code>slug</code>, <code>title</code> and <code>tags</code> are optional.</p>
                 <pre className="code-block">{`curl -X POST ${base}/api/v1/links \\
-  -H "Authorization: Bearer velo_sk_..." \\
+  -H "Authorization: Bearer bsd_sk_..." \\
   -H "Content-Type: application/json" \\
   -d '{
     "url": "https://example.com/spring-sale",
@@ -76,7 +76,7 @@ export default async function DocsPage() {
   "shortUrl": "${base}/spring",
   "created_at": 1770000000000
 }`}</pre>
-                <p>If the slug is taken you get <code>409</code>. If it is reserved or malformed, <code>400</code>. Omit it and Velo generates a 7-character slug.</p>
+                <p>If the slug is taken you get <code>409</code>. If it is reserved or malformed, <code>400</code>. Omit it and BigSavingsDays generates a 7-character slug.</p>
               </section>
 
               <section id="list">
@@ -102,7 +102,7 @@ GET /api/v1/links/spring`}</pre>
                 <h2>Delete a link</h2>
                 <p><code>DELETE /api/v1/links/:slug</code> permanently removes a link and its click history.</p>
                 <pre className="code-block">{`curl -X DELETE ${base}/api/v1/links/spring \\
-  -H "Authorization: Bearer velo_sk_..."`}</pre>
+  -H "Authorization: Bearer bsd_sk_..."`}</pre>
               </section>
 
               <section id="errors">

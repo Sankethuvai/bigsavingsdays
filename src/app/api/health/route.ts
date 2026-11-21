@@ -32,7 +32,7 @@ export async function GET() {
   return NextResponse.json(
     {
       status: ok ? "ok" : "degraded",
-      service: "velo",
+      service: "bigsavingsdays",
       checks,
       time: new Date().toISOString(),
     },

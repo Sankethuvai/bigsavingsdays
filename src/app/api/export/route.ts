@@ -22,7 +22,7 @@ export async function GET(request: Request) {
          WHERE l.user_id = ? ORDER BY c.ts DESC LIMIT 100000`
       )
       .all(user.id) as Record<string, unknown>[];
-    filename = "velo-clicks.csv";
+    filename = "bigsavingsdays-clicks.csv";
   } else {
     rows = db
       .prepare(
@@ -34,7 +34,7 @@ export async function GET(request: Request) {
          WHERE l.user_id = ? GROUP BY l.id ORDER BY l.created_at DESC`
       )
       .all(user.id) as Record<string, unknown>[];
-    filename = "velo-links.csv";
+    filename = "bigsavingsdays-links.csv";
   }
 
   const body = toCsv(rows);

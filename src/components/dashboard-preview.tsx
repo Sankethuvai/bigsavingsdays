@@ -78,7 +78,7 @@ export function DashboardPreview() {
             <div key={l.slug} className="preview-row">
               <span className="preview-fav">{l.slug[0]}</span>
               <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontSize: 10.5, fontWeight: 600, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>velo.link/{l.slug}</div>
+                <div style={{ fontSize: 10.5, fontWeight: 600, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>bigsavingsdays.com/{l.slug}</div>
                 <div style={{ fontSize: 9, opacity: .5, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{l.title}</div>
               </div>
               <span style={{ fontSize: 10, fontWeight: 700 }}>{l.clicks}</span>

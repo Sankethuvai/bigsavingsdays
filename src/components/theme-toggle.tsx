@@ -16,7 +16,9 @@ export function ThemeToggle({ className = "theme-toggle" }: { className?: string
     setTheme(next);
     document.documentElement.setAttribute("data-theme", next);
     try {
+      localStorage.setItem("bsd-theme", next);
       localStorage.setItem("velo-theme", next);
+      document.cookie = `bsd-theme=${next}; path=/; max-age=31536000; samesite=lax`;
       document.cookie = `velo-theme=${next}; path=/; max-age=31536000; samesite=lax`;
     } catch {
       /* ignore */

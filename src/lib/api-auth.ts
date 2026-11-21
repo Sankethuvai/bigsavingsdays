@@ -12,7 +12,7 @@ export type ApiAuth =
 export function authenticateApi(request: Request): ApiAuth {
   const header = request.headers.get("authorization") ?? "";
   const token = header.startsWith("Bearer ") ? header.slice(7).trim() : "";
-  if (!token || !token.startsWith("velo_sk_") || token.length > 200) {
+  if (!token || (!token.startsWith("bsd_sk_") && !token.startsWith("velo_sk_")) || token.length > 200) {
     return { error: "Missing or invalid bearer token", status: 401 };
   }
   const row = getDb()

@@ -140,7 +140,7 @@ export default async function PagesDashboard({ searchParams }: { searchParams: P
           <div className="icon-box" style={{ margin: 0 }}><Grid /></div>
           <div>
             <div className="panel-title">Tip: use a short bio page link in every profile</div>
-            <p className="panel-sub">Velo records a click on the page link and on the individual destination, so you see both intent and outcome.</p>
+            <p className="panel-sub">BigSavingsDays records a click on the page link and on the individual destination, so you see both intent and outcome.</p>
           </div>
         </div>
       </div>

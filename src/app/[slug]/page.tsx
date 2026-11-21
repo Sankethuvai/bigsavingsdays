@@ -103,7 +103,7 @@ export default async function SlugPage({
   if (link.password_hash) {
     const jar = await cookies();
     const unlocked = verifyUnlockToken(
-      jar.get(`velo_unlock_${link.id}`)?.value,
+      jar.get(`bsd_unlock_${link.id}`)?.value ?? jar.get(`velo_unlock_${link.id}`)?.value,
       slug,
       link.password_hash
     );
@@ -127,7 +127,7 @@ export default async function SlugPage({
 
       clearRateLimit(bucket);
       const store = await cookies();
-      store.set(`velo_unlock_${link!.id}`, issueUnlockToken(slug, fresh.password_hash), {
+      store.set(`bsd_unlock_${link!.id}`, issueUnlockToken(slug, fresh.password_hash), {
         httpOnly: true,
         sameSite: "lax",
         secure: isProduction,

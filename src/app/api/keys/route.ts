@@ -27,7 +27,7 @@ export async function POST(request: Request) {
   if (count >= 10) return NextResponse.json({ error: "You can have up to 10 active keys." }, { status: 403 });
 
   const secret = crypto.randomBytes(24).toString("hex");
-  const key = `velo_sk_${secret}`;
+  const key = `bsd_sk_${secret}`;
   const id = randomId(8);
   const requested = typeof parsed.data.name === "string" ? parsed.data.name : "";
   const name = requested.trim().slice(0, 40) || "Default key";

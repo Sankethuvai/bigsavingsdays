@@ -8,8 +8,8 @@
 
 export const isProduction = process.env.NODE_ENV === "production";
 
-const DEV_SESSION_SECRET = "velo-development-session-secret-do-not-use-in-production";
-const DEV_IP_SALT = "velo-development-ip-salt";
+const DEV_SESSION_SECRET = "bsd-development-session-secret-do-not-use-in-production";
+const DEV_IP_SALT = "bsd-development-ip-salt";
 
 function clean(value: string | undefined): string | null {
   const trimmed = value?.trim();
@@ -70,18 +70,20 @@ export function cnameTarget(): string {
   }
 }
 
-/** The public demo workspace is enabled by default unless explicitly disabled with DEMO_MODE=0. */
+/** The public demo workspace is opt-in (disabled by default in production). */
 export function demoEnabled(): boolean {
   const flag = clean(process.env.DEMO_MODE);
+  if (flag === "1") return true;
   if (flag === "0") return false;
-  return true;
+  return false;
 }
 
-/** Demo seed data is seeded by default unless explicitly disabled with SEED_DEMO=0. */
+/** Demo seed data is opt-in (disabled by default in production). */
 export function seedDemo(): boolean {
   const flag = clean(process.env.SEED_DEMO);
+  if (flag === "1") return true;
   if (flag === "0") return false;
-  return true;
+  return false;
 }
 
 /**

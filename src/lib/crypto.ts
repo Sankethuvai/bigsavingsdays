@@ -29,7 +29,7 @@ export function verifyPassword(password: string, stored: string): boolean {
  */
 let timingHash: string | null = null;
 export function dummyPasswordHash(): string {
-  timingHash ??= hashPassword("velo-timing-equalizer-not-a-real-password");
+  timingHash ??= hashPassword("bsd-timing-equalizer-not-a-real-password");
   return timingHash;
 }
 

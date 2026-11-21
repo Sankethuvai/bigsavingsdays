@@ -5,6 +5,12 @@ import { registerHooks } from "node:module";
 
 registerHooks({
   resolve(specifier, context, nextResolve) {
+    if (specifier === "server-only") {
+      return { url: "data:text/javascript,export default {};", format: "module", shortCircuit: true };
+    }
+    if (specifier === "next/headers") {
+      return { url: "data:text/javascript,export const headers = async () => new Map();", format: "module", shortCircuit: true };
+    }
     try {
       return nextResolve(specifier, context);
     } catch (error) {
