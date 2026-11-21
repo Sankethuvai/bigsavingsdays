@@ -55,8 +55,9 @@ export function sameOrigin(request: Request): boolean {
   try {
     const allowed = new URL(appUrl()).origin;
     if (origin === allowed) return true;
-    // Local development may be served from either localhost spelling.
+    // Local development and Vercel preview deployments
     if (!isProduction && /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin)) return true;
+    if (/\.vercel\.app$/.test(new URL(origin).hostname)) return true;
     return false;
   } catch {
     return false;

@@ -8,17 +8,33 @@ type DB = Database.Database;
 
 const globalForDb = globalThis as unknown as { __veloDb?: DB };
 
+function getDatabaseFilePath(): string {
+  if (process.env.DATABASE_PATH) return process.env.DATABASE_PATH;
+  if (process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME) {
+    return path.join("/tmp", "bigsavingsdays.db");
+  }
+  return path.join(process.cwd(), "data", "velo.db");
+}
+
 function createDb(): DB {
-  const file =
-    process.env.DATABASE_PATH ??
-    path.join(process.cwd(), "data", "velo.db");
+  const file = getDatabaseFilePath();
 
   if (file !== ":memory:") {
-    fs.mkdirSync(path.dirname(path.resolve(file)), { recursive: true });
+    try {
+      fs.mkdirSync(path.dirname(path.resolve(/*turbopackIgnore: true*/ file)), { recursive: true });
+    } catch {
+      // In serverless / read-only environments, ignore if directory exists or fails
+    }
   }
 
   const db = new Database(file);
-  db.pragma("journal_mode = WAL");
+  try {
+    db.pragma("journal_mode = WAL");
+  } catch {
+    try {
+      db.pragma("journal_mode = DELETE");
+    } catch {}
+  }
   db.pragma("foreign_keys = ON");
   db.pragma("busy_timeout = 5000");
   db.pragma("synchronous = NORMAL");

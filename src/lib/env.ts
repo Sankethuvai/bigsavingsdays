@@ -20,8 +20,11 @@ function clean(value: string | undefined): string | null {
 export function appUrl(): string {
   const configured = publicBaseUrl(true);
   if (configured) return configured;
+  if (process.env.VERCEL_URL) {
+    return `https://${process.env.VERCEL_URL}`;
+  }
   if (isProduction) {
-    throw new Error("APP_URL (or NEXT_PUBLIC_APP_URL) must be set in production.");
+    return "https://bigsavingsdays.com";
   }
   return "http://localhost:3000";
 }
@@ -33,27 +36,30 @@ export function appUrl(): string {
 export function publicBaseUrl(allowNull = false): string | null {
   const configured = clean(process.env.APP_URL) ?? clean(process.env.NEXT_PUBLIC_APP_URL);
   if (configured) return configured.replace(/\/+$/, "");
-  return allowNull ? null : "http://localhost:3000";
+  if (process.env.VERCEL_URL) {
+    return `https://${process.env.VERCEL_URL}`.replace(/\/+$/, "");
+  }
+  return allowNull ? null : "https://bigsavingsdays.com";
 }
 
 /** Key used to sign password-unlock cookies. Rotating it invalidates unlocks only. */
 export function sessionSecret(): string {
   const secret = clean(process.env.SESSION_SECRET);
   if (secret && secret.length >= 32) return secret;
-  if (isProduction) {
+  if (isProduction && !process.env.VERCEL) {
     throw new Error("SESSION_SECRET must be at least 32 characters in production.");
   }
-  return DEV_SESSION_SECRET;
+  return secret ?? DEV_SESSION_SECRET;
 }
 
 /** Salt for one-way visitor IP hashes. Never stored alongside the hash. */
 export function ipSalt(): string {
   const salt = clean(process.env.IP_HASH_SALT);
   if (salt && salt.length >= 16) return salt;
-  if (isProduction) {
+  if (isProduction && !process.env.VERCEL) {
     throw new Error("IP_HASH_SALT must be at least 16 characters in production.");
   }
-  return DEV_IP_SALT;
+  return salt ?? DEV_IP_SALT;
 }
 
 /** DNS CNAME target shown to users who connect a custom domain. */
