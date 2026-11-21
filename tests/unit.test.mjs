@@ -128,3 +128,44 @@ test("linkShortUrl defaults to bigsavingsdays.com for vercel preview hosts", asy
   assert.equal(linkShortUrl("https://bigsavingsdays.com", "summer-deal"), "https://bigsavingsdays.com/summer-deal");
   assert.equal(linkShortUrl("https://bigsavingsdays.com", "exclusive", "go.deals.com"), "https://go.deals.com/exclusive");
 });
+
+test("sameOrigin permits matching host, vercel previews, and bigsavingsdays domains", async () => {
+  const { sameOrigin } = await import("../src/lib/http.ts");
+
+  // Vercel deployment preview origin matching its Host header
+  const req1 = new Request("https://bigsavingsdays-abc.vercel.app/api/links", {
+    headers: {
+      origin: "https://bigsavingsdays-abc.vercel.app",
+      host: "bigsavingsdays-abc.vercel.app",
+    },
+  });
+  assert.equal(sameOrigin(req1), true);
+
+  // Custom domain with www matching Host
+  const req2 = new Request("https://www.bigsavingsdays.com/api/links", {
+    headers: {
+      origin: "https://www.bigsavingsdays.com",
+      host: "www.bigsavingsdays.com",
+    },
+  });
+  assert.equal(sameOrigin(req2), true);
+
+  // Modern browser sec-fetch-site same-origin
+  const req3 = new Request("https://any-domain.com/api/links", {
+    headers: {
+      origin: "https://any-domain.com",
+      "sec-fetch-site": "same-origin",
+    },
+  });
+  assert.equal(sameOrigin(req3), true);
+
+  // Block attacker cross-site request
+  const req4 = new Request("https://bigsavingsdays.com/api/links", {
+    headers: {
+      origin: "https://malicious-site.xyz",
+      host: "bigsavingsdays.com",
+      "sec-fetch-site": "cross-site",
+    },
+  });
+  assert.equal(sameOrigin(req4), false);
+});

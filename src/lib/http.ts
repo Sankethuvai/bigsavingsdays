@@ -52,12 +52,56 @@ export async function readJson<T = Record<string, unknown>>(
 export function sameOrigin(request: Request): boolean {
   const origin = request.headers.get("origin");
   if (!origin) return true;
+
   try {
-    const allowed = new URL(appUrl()).origin;
-    if (origin === allowed) return true;
-    // Local development and Vercel preview deployments
-    if (!isProduction && /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin)) return true;
-    if (/\.vercel\.app$/.test(new URL(origin).hostname)) return true;
+    const originUrl = new URL(origin);
+    const hostHeader = request.headers.get("x-forwarded-host") ?? request.headers.get("host");
+
+    // 1. Same-site / same-host check against request's own Host header
+    if (hostHeader) {
+      const normalizedHost = hostHeader.split(",")[0].trim().toLowerCase();
+      if (originUrl.host.toLowerCase() === normalizedHost) {
+        return true;
+      }
+    }
+
+    // 2. Modern browser Sec-Fetch-Site header
+    const secFetchSite = request.headers.get("sec-fetch-site");
+    if (secFetchSite === "same-origin" || secFetchSite === "same-site") {
+      return true;
+    }
+
+    // 3. Localhost and loopback
+    if (
+      originUrl.hostname === "localhost" ||
+      originUrl.hostname === "127.0.0.1" ||
+      originUrl.hostname.endsWith(".localhost")
+    ) {
+      return true;
+    }
+
+    // 4. Any Vercel deployment preview or production host (*.vercel.app)
+    if (originUrl.hostname.endsWith(".vercel.app")) {
+      return true;
+    }
+
+    // 5. Configured brand domain and subdomains (*.bigsavingsdays.com)
+    if (
+      originUrl.hostname === "bigsavingsdays.com" ||
+      originUrl.hostname.endsWith(".bigsavingsdays.com")
+    ) {
+      return true;
+    }
+
+    // 6. Match against configured appUrl
+    const app = appUrl();
+    if (app) {
+      const allowed = new URL(app);
+      if (originUrl.origin === allowed.origin || originUrl.hostname === allowed.hostname) {
+        return true;
+      }
+    }
+
     return false;
   } catch {
     return false;

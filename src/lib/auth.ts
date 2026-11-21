@@ -66,12 +66,17 @@ export const getSessionUser = cache(async (): Promise<SessionUser | null> => {
   if (payload) {
     try {
       const db = getDb();
-      const existing = db.prepare("SELECT 1 FROM users WHERE id = ?").get(payload.uid);
-      if (!existing && payload.em) {
-        db.prepare(
-          `INSERT OR IGNORE INTO users (id, email, name, password_hash, role, plan, avatar_color, created_at)
-           VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
-        ).run(payload.uid, payload.em, payload.nm, "external_authenticated", payload.ro, payload.pl, payload.col, payload.cat);
+      const existingById = db.prepare("SELECT id FROM users WHERE id = ?").get(payload.uid) as { id: string } | undefined;
+      if (!existingById && payload.em) {
+        const existingByEmail = db.prepare("SELECT id FROM users WHERE email = ?").get(payload.em) as { id: string } | undefined;
+        if (existingByEmail) {
+          payload.uid = existingByEmail.id;
+        } else {
+          db.prepare(
+            `INSERT INTO users (id, email, name, password_hash, role, plan, avatar_color, created_at)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
+          ).run(payload.uid, payload.em, payload.nm, "external_authenticated", payload.ro, payload.pl, payload.col, payload.cat);
+        }
       }
     } catch {
       // Non-blocking in serverless environments

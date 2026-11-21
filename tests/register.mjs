@@ -11,6 +11,9 @@ registerHooks({
     if (specifier === "next/headers") {
       return { url: "data:text/javascript,export const headers = async () => new Map();", format: "module", shortCircuit: true };
     }
+    if (specifier === "next/server") {
+      return { url: "data:text/javascript,export class NextResponse { static json(d, o) { return { data: d, ...o }; } };", format: "module", shortCircuit: true };
+    }
     try {
       return nextResolve(specifier, context);
     } catch (error) {
