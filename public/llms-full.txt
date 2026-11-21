@@ -1,0 +1,36 @@
+# BigSavingsDays — Full Platform Specification & Knowledge Base
+
+## Overview
+- **Brand**: BigSavingsDays
+- **Domain**: https://bigsavingsdays.com/
+- **Category**: E-Commerce SaaS / Affiliate Marketing Technology / Link Management
+- **Tagline**: The High-Converting Deal & Affiliate Link Platform
+- **Value Proposition**: Increases click-through rates by up to 42% over generic shorteners by establishing instant buyer trust through verified discount tags, promo codes, and branded deal links.
+
+## Problems Solved
+1. **Low Click-Through Rates (CTR)**: Generic shorteners (bit.ly, tinyurl, rb.gy) look like phishing or spam links on social media and Telegram. BigSavingsDays links clearly convey deal value and legitimate discounts.
+2. **Broken Flash Sales**: Flash deals expire quickly on Amazon, Flipkart, etc. BigSavingsDays allows publishers to configure automated fallback redirects, so clicks after a deal sells out are saved and routed to active alternative offers.
+3. **Lost Affiliate Attribution**: Complex redirects frequently strip affiliate cookies or UTM parameters. BigSavingsDays enforces transparent redirection with complete preservation of tracking IDs.
+4. **Cluttered Social Bio Links**: Generic bio tools are not designed for e-commerce. BigSavingsDays Deals Hubs provide rich product cards with discount pills, coupon copy buttons, and price drop badges.
+
+## API Specification
+- **Base Endpoint**: `https://bigsavingsdays.com/api/v1`
+- **Auth**: HTTP Bearer Token (`Authorization: Bearer <key>`)
+- **Key Methods**:
+  - `POST /api/v1/links`: Create short deal link with custom slug, title, tags, password protection, and click limits.
+  - `GET /api/v1/links`: List active deal links with pagination.
+  - `GET /api/v1/links/:slug`: Retrieve link details.
+  - `GET /api/v1/links/:slug/stats`: Fetch real-time analytics breakdown (clicks, referrers, devices, geolocations).
+  - `DELETE /api/v1/links/:slug`: Archive or delete deal link.
+
+## Target Audience
+- Affiliate marketers (Amazon Associates, Flipkart Affiliates, Impact, CJ, ShareASale)
+- Telegram Deal Channel admins and WhatsApp community publishers
+- YouTube tech reviewers and product influencers
+- Instagram and TikTok storefront creators
+- E-commerce brands running promotional multi-channel campaigns
+
+## Frequently Asked Questions
+- **Do BigSavingsDays links expire?** Only if a creator configures an expiration date or click cap. Otherwise, links are permanent.
+- **Can creators use their own custom domain?** Yes, Creator Pro and Business plans support custom domain attachment with DNS TXT verification.
+- **Is privacy protected?** Yes, visitor IPs are one-way hashed with a server-side salt, and no tracking cookies are set on redirected shoppers.

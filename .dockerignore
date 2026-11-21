@@ -1,0 +1,17 @@
+node_modules
+.next
+out
+data
+backups
+.git
+.gitignore
+.env
+.env.*
+!.env.example
+*.log
+.DS_Store
+tsconfig.tsbuildinfo
+tests
+scripts
+PRODUCTION.md
+README.md

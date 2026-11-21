@@ -1,0 +1,37 @@
+{
+  "name": "bigsavingsdays",
+  "version": "2.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev -p 3000",
+    "build": "next build",
+    "start": "next start",
+    "lint": "tsc --noEmit",
+    "typecheck": "tsc --noEmit",
+    "test": "node --import ./tests/register.mjs --test tests/*.test.mjs",
+    "smoke": "node scripts/smoke.mjs",
+    "admin:create": "node scripts/create-admin.mjs",
+    "db:backup": "node scripts/backup.mjs",
+    "db:maintain": "node scripts/maintain.mjs",
+    "db:restore": "node scripts/restore.mjs",
+    "db:reset": "node -e \"require('fs').rmSync('data/velo.db',{force:true})\""
+  },
+  "dependencies": {
+    "better-sqlite3": "^13.2.0",
+    "next": "16.4.6",
+    "qrcode": "^1.5.4",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/node": "^24.0.0",
+    "@types/qrcode": "^1.5.6",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "typescript": "^5.9.0"
+  },
+  "engines": {
+    "node": ">=22.16"
+  }
+}
