@@ -61,26 +61,60 @@ export const getSessionUser = cache(async (): Promise<SessionUser | null> => {
   const token = jar.get(SESSION_COOKIE)?.value ?? jar.get("velo_session")?.value;
   if (!token) return null;
 
-  // 1. Signed stateless session (100% resilient across serverless Lambdas and cold starts)
+  // 1. Signed stateless session (resilient across serverless Lambdas)
   const payload = verifySession(token);
   if (payload) {
     try {
       const db = getDb();
-      const existingById = db.prepare("SELECT id FROM users WHERE id = ?").get(payload.uid) as { id: string } | undefined;
+      const existingById = db
+        .prepare("SELECT id FROM users WHERE id = ?")
+        .get(payload.uid) as { id: string } | undefined;
+      let correctedUid = payload.uid;
       if (!existingById && payload.em) {
-        const existingByEmail = db.prepare("SELECT id FROM users WHERE email = ?").get(payload.em) as { id: string } | undefined;
+        const existingByEmail = db
+          .prepare("SELECT id FROM users WHERE email = ?")
+          .get(payload.em) as { id: string } | undefined;
         if (existingByEmail) {
-          payload.uid = existingByEmail.id;
+          correctedUid = existingByEmail.id;
         } else {
           db.prepare(
-            `INSERT INTO users (id, email, name, password_hash, role, plan, avatar_color, created_at)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
-          ).run(payload.uid, payload.em, payload.nm, "external_authenticated", payload.ro, payload.pl, payload.col, payload.cat);
+            `INSERT INTO users (id, email, name, password_hash, role, plan, avatar_color, created_at)`
+            + " VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
+          ).run(
+            payload.uid,
+            payload.em,
+            payload.nm,
+            "external_authenticated",
+            payload.ro,
+            payload.pl,
+            payload.col,
+            payload.cat
+          );
         }
       }
-    } catch {
-      // Non-blocking in serverless environments
-    }
+      // Re‑issue a fresh signed cookie if UID was corrected
+      if (correctedUid !== payload.uid) {
+        const freshPayload: SessionPayload = {
+          uid: correctedUid,
+          em: payload.em,
+          nm: payload.nm,
+          ro: payload.ro,
+          pl: payload.pl,
+          col: payload.col,
+          cat: payload.cat,
+          exp: payload.exp,
+          sid: payload.sid,
+        };
+        const signed = signSession(freshPayload);
+        jar.set(SESSION_COOKIE, signed, {
+          httpOnly: true,
+          sameSite: "lax",
+          secure: isProduction,
+          path: "/",
+          maxAge: SESSION_DAYS * 86_400,
+        });
+      }
+    } catch {}
 
     return {
       id: payload.uid,
@@ -93,7 +127,7 @@ export const getSessionUser = cache(async (): Promise<SessionUser | null> => {
     };
   }
 
-  // 2. Database session lookup fallback (for backwards compatibility)
+  // 2. DB session fallback (compatibility)
   try {
     const db = getDb();
     const row = db
@@ -152,7 +186,9 @@ export async function startSession(userId: string, partialUser?: Partial<Session
     };
   } else {
     try {
-      user = db.prepare("SELECT id, email, name, role, plan, avatar_color, created_at FROM users WHERE id = ?").get(userId) as SessionUser | undefined;
+      user = db
+        .prepare("SELECT id, email, name, role, plan, avatar_color, created_at FROM users WHERE id = ?")
+        .get(userId) as SessionUser | undefined;
     } catch {}
   }
 
@@ -165,16 +201,13 @@ export async function startSession(userId: string, partialUser?: Partial<Session
       "INSERT INTO sessions (id, user_id, created_at, expires_at) VALUES (?, ?, ?, ?)"
     ).run(sid, userId, now, expiresAt);
 
-    // Housekeeping: expired sessions and an upper bound per account.
     db.prepare("DELETE FROM sessions WHERE expires_at < ?").run(now);
     db.prepare(
       `DELETE FROM sessions WHERE user_id = ? AND id NOT IN (
          SELECT id FROM sessions WHERE user_id = ? ORDER BY created_at DESC LIMIT 10
        )`
     ).run(userId, userId);
-  } catch {
-    // Non-blocking in ephemeral serverless environments
-  }
+  } catch {}
 
   const payload: SessionPayload = {
     uid: userId,
@@ -233,10 +266,8 @@ export async function endSession(): Promise<void> {
 }
 
 export async function getBaseUrl(): Promise<string> {
-  // Prefer explicit configuration. Falling back to request headers is safe in development
-  // but would let a spoofed Host header poison generated links in production.
   const configured = process.env.APP_URL?.trim() || process.env.NEXT_PUBLIC_APP_URL?.trim();
-  if (configured) return configured.replace(/\/+$/, "");
+  if (configured) return configured.replace(/\\+$/, "");
   if (isProduction || process.env.VERCEL) return "https://bigsavingsdays.com";
   const h = await headers();
   const host = h.get("x-forwarded-host") ?? h.get("host") ?? "localhost:3000";
@@ -246,8 +277,6 @@ export async function getBaseUrl(): Promise<string> {
 }
 
 export async function getClientIp(): Promise<string> {
-  // When Node is exposed directly, any client-supplied forwarding header is attacker
-  // controlled, so ignore them all and let the limiter key on a constant bucket.
   if (!trustProxy()) return "unknown";
   const h = await headers();
   const direct = h.get("cf-connecting-ip") ?? h.get("x-real-ip");
